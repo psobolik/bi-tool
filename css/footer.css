@@ -1,0 +1,31 @@
+.footer {
+    font-size: small;
+    position: fixed;
+    right: 20px;
+    bottom: -200px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    color: black;
+    background: rgba(255, 255, 255, 0.65);
+    border-radius: 5px;
+    visibility: hidden;
+    opacity: 0;
+}
+
+.footer ul {
+    padding-left: 1em;
+}
+
+.footer.in-view {
+    transition-duration: 0.75s;
+    transform: translateY(-210px);
+    visibility: visible;
+    opacity: 1;
+}
+
+@media (max-width: 1200px){
+    .footer {
+        display: none;
+    }
+}

@@ -1,0 +1,101 @@
+@import "notify.css";
+@import "footer.css";
+
+:root {
+    --main-color: #dfdfdf;
+    --main-bg-color: #212121;
+
+    --icon-bg-color: #444444;
+    --icon-color: var(--main-color);
+    --svg-width: 75px;
+
+    color-scheme: light dark;
+    background-color: var(--main-bg-color);
+    color: var(--main-color);
+    font-size: 16pt;
+}
+
+body {
+    font-family: sans-serif;
+    margin: 1em 1em;
+}
+
+#header {
+    font-size: 16pt;
+    display: flex;
+}
+
+#header .heading {
+    font-size: xxx-large;
+    font-weight: bold;
+    flex: 1;
+}
+
+#header input {
+    margin-left: 0.5em;
+    height: 2em;
+}
+
+#container {
+    max-width: 1000px;
+    margin: auto auto;
+}
+
+.icon-container {
+    width: 150px;
+    display: inline-table;
+    text-align: center;
+    padding: 0.5em;
+}
+
+#select-icon-container {
+    display: inline-block;
+    border-color: var(--main-color);
+    border-style: solid;
+    border-radius: 5px;
+    border-width: 1px;
+}
+
+#select-icon-container .icon-container {
+    width: 50px;
+}
+
+#select-icon-container .svg-container {
+    padding: 0.25em 0.75em;
+}
+
+#select-container .label-container {
+    display: inline-block;
+    vertical-align: bottom;
+}
+
+#select-container .label-container label {
+    writing-mode: sideways-lr;
+    padding: 0.5em 0 0.5em 0.5em;
+}
+
+.svg-container {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0.75em;
+    background-color: var(--icon-bg-color);
+    border: solid thin var(--icon-bg-color);
+    border-radius: 10px;
+    fill: var(--icon-color);
+    padding: 0.75em 1em;
+    display: block;
+}
+
+.svg-container svg {
+    width: var(--svg-width);
+    height: var(--svg-width);
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --main-color: #323232;
+        --main-bg-color: #ffffff;
+
+        --icon-bg-color: #f4f4f4;
+    }
+}
