@@ -3,12 +3,11 @@ import {SvgLoader} from "./svg-loader.ts";
 import {Helpers} from "./Helpers.ts";
 
 window.addEventListener('load', () => {
+  const notifyContainer = document.getElementById('notify-container');
+  notifyContainer?.addEventListener('animationend', _evt => {
+    notifyContainer.classList.remove('notify-animate');
+  });
   document.querySelector(".footer")?.classList.add("in-view");
-  (document.getElementById('notify-container') as Element)
-    .addEventListener('animationend', _evt => {
-      (document.getElementById('notify-container') as Element)
-        .classList.remove('notify-animate');
-    });
   (document.getElementById('copy-button') as Element)
     .addEventListener('click', handleCopy);
   const filterEl = (document.getElementById('filter') as HTMLInputElement);
@@ -22,19 +21,15 @@ window.addEventListener('load', () => {
 function loadSymbols() {
   SvgLoader.load(svgFile)
     .then(svgDocument => {
-      const expression = svgDocument.createExpression('//*[name()="symbol"]/@id');
-      const symbolIdAttrs = expression.evaluate(svgDocument, XPathResult.ORDERED_NODE_ITERATOR_TYPE);
-
       const container = (document.getElementById('symbol-container') as Element);
-
-      let symbolIdAttr = null;
-      while (symbolIdAttr = symbolIdAttrs.iterateNext() as Attr) {
-        container.appendChild(createSymbolElement(symbolIdAttr.value))
+      svgDocument.querySelectorAll('symbol').forEach(symbol => {
+        container.appendChild(createSymbolElement(symbol.id))
           .addEventListener('click', evt => {
             selectSymbol(evt.target as HTMLElement);
           });
-      }
-      const svgEl = document.body.insertBefore(svgDocument.firstElementChild as Element, document.getElementById('container')) as SVGElement;
+      })
+      const svgEl = document.body.insertBefore(svgDocument.firstElementChild as Element,
+        document.getElementById('container')) as SVGElement;
       svgEl.id = 'svg';
       svgEl.style.display = 'none';
     });
@@ -42,11 +37,7 @@ function loadSymbols() {
 
 function getSelectedSymbolIds() {
   const container = (document.getElementById('select-icon-container') as Element);
-  const result = new Array<string>()
-  Helpers.forEachChild(container, el => {
-    result.push(el.id);
-  });
-  return result;
+  return [...container.children].map(child => child.id);
 }
 
 function setSelectContainerVisibility() {
@@ -60,16 +51,12 @@ function setSelectContainerVisibility() {
   }
 }
 
-function getIconContainer(el: HTMLElement) {
-  let result: HTMLElement | null = el;
-  while (result && !result.classList.contains('icon-container')) {
-    result = result.parentElement;
-  }
-  return result;
+function findIconContainer(el: HTMLElement): Element | null {
+  return el?.closest('.icon-container');
 }
 
 function selectSymbol(el: HTMLElement) {
-  const iconContainer = getIconContainer(el);
+  const iconContainer = findIconContainer(el);
   if (iconContainer == null) return;
 
   const selected = getSelectedSymbolIds();
@@ -84,7 +71,7 @@ function selectSymbol(el: HTMLElement) {
 }
 
 function unselectSymbol(el: HTMLElement) {
-  const iconContainer = getIconContainer(el);
+  const iconContainer = findIconContainer(el);
   if (iconContainer == null) return;
 
   const container = (document.getElementById('select-icon-container') as Element);
@@ -140,7 +127,7 @@ function handleCopy() {
   selected.forEach(id => {
     const node = svgDocument.querySelector(`[id="${id}"]`);
     if (node)
-      svgElement.appendChild(xmlDocument.importNode(node, true));
+      svgElement.appendChild(node.cloneNode(true));
   })
 
   const xmlSerializer = new XMLSerializer();
