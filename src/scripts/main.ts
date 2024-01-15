@@ -1,6 +1,5 @@
 import svgFile from '../images/bootstrap-icons.svg';
 import {SvgLoader} from "./svg-loader.ts";
-import {Helpers} from "./Helpers.ts";
 
 window.addEventListener('load', () => {
   const notifyContainer = document.getElementById('notify-container');
@@ -88,7 +87,6 @@ function createSymbolElement(symbolName: string) {
   svgContainer.classList.add('svg-container');
 
   const svgElement = svgContainer.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'svg'));
-  svgElement.setAttribute('viewport', '0 0 16 16');
 
   const useElement = svgElement.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'use'))
   useElement.setAttribute('href', `#${symbolName}`);
@@ -101,14 +99,13 @@ function createSymbolElement(symbolName: string) {
 }
 
 function handleFilterInput(event: KeyboardEvent) {
-  function hideSymbols(pattern: string) {
-    const re = new RegExp(`^.*${pattern}.*$`);
-    const container = (document.getElementById('symbol-container') as Element);
-    Helpers.forEachChild(container, el => {
-      (el as HTMLElement).style.display = re.test((el.id)) ? '' : 'none';
-    });
-  }
-  hideSymbols((event.target as HTMLInputElement).value);
+  const input = event.target as HTMLInputElement;
+  if (event.code == "Escape")
+    input.value = '';
+  const re = new RegExp(`^.*${input.value}.*$`);
+  const container = (document.getElementById('symbol-container') as Element);
+  [...container.children].map(child =>
+    (child as HTMLElement).style.display = re.test((child.id)) ? '' : 'none');
 }
 
 function handleCopy() {
